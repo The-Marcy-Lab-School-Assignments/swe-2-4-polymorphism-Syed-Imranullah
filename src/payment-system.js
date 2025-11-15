@@ -11,23 +11,49 @@ class Payment {
     return `Payment of $${this.amount} to ${this.recipient} completed`;
   }
   getDetails() {
-    return `$${this.amount} to ${this.recipient} - Status: ${this.status}`
+    return `$${this.amount} to ${this.recipient} - Status: ${this.status}`;
   }
 }
 
 class CreditCardPayment extends Payment {
   constructor(amount, recipient, cardNumber) {
-    super(amount, recipient)
-    this.cardNumber = cardNumber
+    super(amount, recipient);
+    this.cardNumber = cardNumber;
   }
-  getDetails(){
-    return `${super.getDetails} (Card: ${this.cardNumber})`
+  process() {
+    const last4digit = this.cardNumber.slice(-4);
+    return `${super.process()} via Credit Card ****${last4digit}`;
+  }
+  getDetails() {
+    const last4digit = this.cardNumber.slice(-4);
+    return `${super.getDetails()} (Card: ****${last4digit})`;
   }
 }
 
-class PayPalPayment {}
+class PayPalPayment extends Payment{
+  constructor (amount, recipient, email) {
+    super(amount, recipient)
+    this.email = email
+  }
+  process() {
+    super.process()
+    return `Payment of $${this.amount} to ${this.recipient} completed via PayPal (${this.email})`
+  }
+  getDetails(){
+    return `${super.getDetails()} (PayPal: ${this.email})`
+  }
+  }
 
-const processPayments = (payments) => {};
+const processPayments = (payments) => {
+    let total = 0
+
+    for (const payment of payments) {
+      console.log(payment.getDetails())
+      console.log(payment.process())
+      total += payment.amount
+    }
+    return total
+};
 
 module.exports = {
   Payment,
